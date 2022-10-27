@@ -59,13 +59,11 @@
 import BlogArticleItem from '../../components/BlogArticleItem/index.vue';
 import type { BlogArticle } from '../../api/types';
 import { inject } from 'vue';
-const blogArticleList = <Array<BlogArticle>>inject('blogArticleList');
+const blogArticleList = inject('blogArticleList') as Array<BlogArticle>;
 </script>
 
 <style lang="less">
 .home {
-  &__container {
-  }
   &__carousel {
     height: 300px;
     padding: 5px;

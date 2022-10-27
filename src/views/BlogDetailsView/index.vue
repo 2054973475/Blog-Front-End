@@ -117,7 +117,7 @@ const handlePage = (id: number) => {
 const initArticle = async () => {
   const allArticle = await getAllArticle();
   blogArticleList.value = allArticle;
-  const article = await getArticle({ id: Number(route.params.id) });
+  const article = await getArticle({ id : Number(route.params.id) });
   blogArticle.value = article;
   blogArticleIndex.value = blogArticleList.value.findIndex(
     (item) => item.id === blogArticle.value.id
@@ -126,10 +126,10 @@ const initArticle = async () => {
   document.title = blogArticle.value.title+'|博客';
 };
 onBeforeRouteUpdate(async () => {
-  initArticle();
+  initArticle()
 });
 onMounted(async () => {
-  initArticle();
+  initArticle()
 });
 </script>
 

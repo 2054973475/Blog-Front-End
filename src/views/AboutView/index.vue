@@ -14,7 +14,6 @@ import { inject, Ref } from 'vue';
 import type { UserInfo } from '../../api/types';
 const userInfo = inject<Ref<UserInfo>>('userInfo');
 const userDesc = userInfo?.value.userDesc;
-console.log(userDesc);
 </script>
 
 <style lang="less">

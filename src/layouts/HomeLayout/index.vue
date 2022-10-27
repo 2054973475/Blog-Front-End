@@ -152,6 +152,7 @@ provide('blogArticleList', blogArticleList);
     flex: 1;
     max-width: 1100px;
     display: flex;
+    width:0;
   }
   &__content {
     flex: 2;
