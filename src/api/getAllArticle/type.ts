@@ -1,4 +1,4 @@
-export type BlogArticle = {
+export type BlogArticleItemType = {
   id: number;
   title: string;
   classify: string;
@@ -9,3 +9,16 @@ export type BlogArticle = {
   summary: string;
   content?: string;
 };
+export type BlogArticleListType={
+  data:Array<BlogArticleItemType>,
+  total:Number
+}
+export type Params={
+  page?:number;
+  pageCount?:number;
+}
+export type ReqData={
+  classify?:string
+  tags?:string,
+  title?:string
+}

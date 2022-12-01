@@ -3,26 +3,14 @@
     <div class="home__carousel">
       <div id="carouselExampleControlsNoTouching" class="carousel slide">
         <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img
-              src="../../assets/login.jpeg"
-              class="d-block w-100"
-              alt="..."
-            />
-          </div>
-          <div class="carousel-item">
-            <img
-              src="../../assets/login.jpeg"
-              class="d-block w-100"
-              alt="..."
-            />
-          </div>
-          <div class="carousel-item">
-            <img
-              src="../../assets/login.jpeg"
-              class="d-block w-100"
-              alt="..."
-            />
+          <div
+            class="carousel-item"
+            data-bs-interval="2000"
+            :class="index === 0 ? 'active' : ''"
+            v-for="(item, index) in carousel"
+            :key="item.id"
+          >
+            <img :src="item.picture" class="d-block w-100" />
           </div>
         </div>
         <button
@@ -46,20 +34,46 @@
       </div>
     </div>
     <div>
-      <BlogArticleItem
-        v-for="blogArticle in blogArticleList"
-        :key="blogArticle.id"
-        :data="blogArticle"
+      <BlogArticle
+        :page="page"
+        :pageCount="pageCount"
+        :blogArticleList="blogArticleList.data"
+        :total="Number(blogArticleList.total)"
+        @currentChange="currentChange"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import BlogArticleItem from '../../components/BlogArticleItem/index.vue';
-import type { BlogArticle } from '../../api/types';
-import { inject } from 'vue';
-const blogArticleList = inject('blogArticleList') as Array<BlogArticle>;
+import { getCarousel, getAllArticle } from "../../api/index";
+import type { CarouselType } from "../../api/types";
+import BlogArticle from "../../components/BlogArticle/index.vue";
+import type { BlogArticleListType } from "../../api/types";
+import { onMounted, ref, Ref } from "vue";
+const page = ref(0);
+const pageCount = ref(5);
+const blogArticleList = <Ref<BlogArticleListType>>ref({});
+const carousel = <Ref<CarouselType[]>>ref([]);
+
+onMounted(async () => {
+  getBlogArticleList();
+  getCarouselList();
+});
+const getBlogArticleList = async () => {
+  const reqAllArticle = await getAllArticle({
+    page: page.value,
+    pageCount: pageCount.value,
+  });
+  blogArticleList.value = reqAllArticle;
+};
+const getCarouselList = async () => {
+  carousel.value = await getCarousel();
+};
+const currentChange = (value: number) => {
+  page.value = value - 1;
+  getBlogArticleList();
+};
 </script>
 
 <style lang="less">
@@ -68,6 +82,7 @@ const blogArticleList = inject('blogArticleList') as Array<BlogArticle>;
     height: 300px;
     padding: 5px;
     background-color: white;
+    margin-bottom: 10px;
     .carousel {
       height: 100%;
     }
@@ -76,6 +91,7 @@ const blogArticleList = inject('blogArticleList') as Array<BlogArticle>;
     }
     .carousel-item {
       height: 100%;
+      width: 100%;
     }
     img {
       height: 100%;

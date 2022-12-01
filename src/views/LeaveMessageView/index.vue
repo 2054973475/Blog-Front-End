@@ -135,12 +135,12 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin-right: 20px;
+    display: flex;
+    align-items: center;
     i {
-      font-size: 50px;
+      font-size: 40px;
+      margin-left: 0px;
       color: white;
     }
   }
@@ -169,11 +169,11 @@
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.2);
     display: flex;
-    justify-content: center;
     align-items: center;
     margin-right: 20px;
     i {
-      font-size: 50px;
+      font-size: 40px;
+      margin-left: 0;
       color: white;
     }
   }

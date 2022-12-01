@@ -39,11 +39,6 @@ const routes = <Array<RouteRecordRaw>>[
     ],
   },
   {
-    path: '/admin/login',
-    name: 'login',
-    component: () => import('../views/LoginView/index.vue'),
-  },
-  {
     path: '/404',
     name: '404',
     component: () => import('../views/404/index.vue'),

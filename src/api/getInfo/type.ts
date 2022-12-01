@@ -1,4 +1,4 @@
-export type UserInfo = {
+export type UserInfoType = {
   id:number;
   name: string;
   userDesc:string;

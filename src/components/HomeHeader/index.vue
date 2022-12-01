@@ -2,7 +2,9 @@
   <div class="header__container">
     <nav class="header__nav navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
-        <router-link to="/home" class="navbar-brand header__nav-brand">Blog</router-link>
+        <router-link to="/home" class="navbar-brand header__nav-brand"
+          >Blog</router-link
+        >
         <button
           class="navbar-toggler"
           type="button"
@@ -23,21 +25,26 @@
               <router-link to="/blog" class="nav-link">博客</router-link>
             </li>
             <li :class="['nav-item', isActive('leaveMessageView')]">
-              <router-link to="/leaveMessage" class="nav-link">留言</router-link>
+              <router-link to="/leaveMessage" class="nav-link"
+                >留言</router-link
+              >
             </li>
             <li :class="['nav-item', isActive('aboutView')]">
               <router-link to="/about" class="nav-link">关于</router-link>
             </li>
             <li class="nav-item header__nav-item">
-              <a href="http://localhost:9528/#/dashboard" class="nav-link">后台</a>
+              <a href="http://localhost:9528/#/dashboard" class="nav-link"
+                >后台</a
+              >
             </li>
           </ul>
           <form class="d-flex header__nav-form" role="search">
             <input
               class="form-control me-2 header__nav-search"
               type="text"
-              placeholder="搜索内容"
-              aria-label="搜索内容"
+              placeholder="请输入关键词"
+              v-model="keyword"
+              @keydown.enter.prevent="handleSearch"
             />
             <i class="header__nav-search-icon bi bi-search"></i>
           </form>
@@ -48,15 +55,25 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
+const router = useRouter();
+const keyword = ref("");
 const isActive = (name: string) => {
-  return route.name === name ? 'header__nav-item-active' : 'header__nav-item';
+  return route.name === name ? "header__nav-item-active" : "header__nav-item";
 };
-onMounted(() => {
-  console.log(route.name);
-});
+const handleSearch = (e:KeyboardEvent) => {
+  const input =e.target as HTMLInputElement
+  router.push({
+    name: "blogView",
+    query: {
+      keyword: keyword.value,
+    },
+  });
+  keyword.value = "";
+  input.blur()!
+};
 </script>
 
 <style lang="less">

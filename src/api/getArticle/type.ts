@@ -1,4 +1,4 @@
-export type BlogArticle = {
+export type BlogArticleType = {
   id: number;
   title: string;
   classify: string;

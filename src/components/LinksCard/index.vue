@@ -4,16 +4,27 @@
       <i class="bi bi-link links__header-icon"></i>友情链接
     </div>
     <div class="links__content">
-      <a class="links__item" href="https://juejin.cn/">掘金</a>
-      <a class="links__item" href="https://www.w3school.com.cn/">w3school</a>
-      <a class="links__item" href="https://cn.vuejs.org/">vue</a>
-      <a class="links__item" href="https://react.docschina.org/">react</a>
-      <a class="links__item" href="https://www.bilibili.com/">bilibili</a>
+      <a
+        class="links__item"
+        target="_blank"
+        :href="item.link"
+        v-for="item in data"
+        :key="item.id"
+        >{{ item.name }}</a
+      >
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted, ref, Ref } from "@vue/runtime-core";
+import { getLinks } from "../../api/index";
+import type { Link } from "../../api/types";
+const data = <Ref<Link[]>>ref([]);
+onMounted(async () => {
+  data.value = await getLinks();
+});
+</script>
 
 <style lang="less">
 .links {

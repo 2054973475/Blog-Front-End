@@ -1,9 +1,15 @@
 <template>
   <div class="blog__container">
-    <div v-if="route.query.keyWords" class="blog__screen">
+    <div v-if="route.query.tags" class="blog__screen">
       <i class="bi bi-search blog__icon-search"></i>
-      搜索<span>{{ route.query.keyWords }}</span>
-      共找到了<span>9</span>条记录
+      搜索标签<span>{{ route.query.tags }}</span>
+      共找到了<span> {{ blogArticleList.total }} </span>条记录
+      <i class="bi bi-x-lg blog__icon-x" @click="handleIconX"></i>
+    </div>
+    <div v-else-if="route.query.keyword" class="blog__screen">
+      <i class="bi bi-search blog__icon-search"></i>
+      搜索关键词<span>{{ route.query.keyword }}</span>
+      共找到了<span> {{ blogArticleList.total }} </span>条记录
       <i class="bi bi-x-lg blog__icon-x" @click="handleIconX"></i>
     </div>
     <div v-else-if="route.query.classif" class="blog__screen">
@@ -13,28 +19,77 @@
       >{{ route.query.classif }}
     </div>
     <div>
-      <BlogArticleItem
-        v-for="blogArticle in blogArticleList"
-        :key="blogArticle.id"
-        :data="blogArticle"
+      <BlogArticle
+        :page="page"
+        :pageCount="pageCount"
+        :blogArticleList="blogArticleList.data"
+        :total="Number(blogArticleList.total)"
+        @currentChange="currentChange"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router';
-import BlogArticleItem from '../../components/BlogArticleItem/index.vue';
-import type { BlogArticle } from '../../api/types';
-import { inject } from 'vue';
-const blogArticleList = <Array<BlogArticle>>inject('blogArticleList');
+import { getAllArticle } from "../../api/index";
+import BlogArticle from "../../components/BlogArticle/index.vue";
+import type { BlogArticleListType } from "../../api/types";
+import type { ReqData } from "../../api/getAllArticle/type";
+import { onMounted, ref, Ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
+const page = ref(0);
+const pageCount = ref(5);
+const blogArticleList = <Ref<BlogArticleListType>>ref({});
+const reqData = <Ref<ReqData>>ref({});
+const init = async () => {
+  page.value = 0;
+  pageCount.value = 5;
+  blogArticleList.value = await getBlogArticleList();
+};
+const getBlogArticleList = async () => {
+  return getAllArticle(
+    {
+      page: page.value,
+      pageCount: pageCount.value,
+    },
+    reqData.value
+  );
+};
+
+const currentChange = async (value: number) => {
+  page.value = value - 1;
+  blogArticleList.value = await getBlogArticleList();
+};
 const handleIconX = () => {
   router.push({
-    name: 'blogView',
+    name: "blogView",
   });
 };
+watch(
+  route,
+  () => {
+    reqData.value = {};
+    if (route.query.classif) {
+      reqData.value["classify"] = route.query.classif as string;
+    }
+    if (route.query.keyword) {
+      reqData.value["title"] = route.query.keyword as string;
+    }
+    if (route.query.tags) {
+      reqData.value["tags"] = route.query.tags as string;
+    }
+    init();
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+);
+onMounted(async () => {
+  init();
+});
 </script>
 
 <style lang="less">
@@ -44,6 +99,7 @@ const handleIconX = () => {
     padding: 25px;
     display: flex;
     align-items: center;
+    margin-bottom: 10px;
     span {
       color: #656de6;
       font-weight: bold;

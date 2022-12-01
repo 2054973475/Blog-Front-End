@@ -1,8 +1,8 @@
 import requests from '../requests';
-import { BlogArticle, Params } from './type';
+import { BlogArticleType, Params } from './type';
 import type { AxiosResponse } from 'axios';
-export const getArticle = async (params: Params): Promise<BlogArticle> => {
-  const data = <AxiosResponse<BlogArticle, any>>await requests({
+export const getArticle = async (params: Params): Promise<Array<BlogArticleType>> => {
+  const data = <AxiosResponse<Array<BlogArticleType>, any>>await requests({
     url: '/getArticle',
     method: 'get',
     params,

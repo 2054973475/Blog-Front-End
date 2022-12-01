@@ -31,6 +31,7 @@
     <div class="blog-article-item__tags">
       <span
         class="blog-article-item__tag"
+        :class="tag === route.query.tags ? 'blog-article-item__tag-active' : ''"
         v-for="tag in data.tags"
         :key="tag"
         >{{ tag }}</span
@@ -40,31 +41,36 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue';
-import type { BlogArticle } from '../../api/types';
-import { useRouter } from 'vue-router';
+import { onMounted, ref, Ref } from "vue";
+import type { BlogArticleItemType } from "../../api/types";
+import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
+const route = useRoute();
 const props = defineProps<{
-  data: BlogArticle;
+  data: BlogArticleItemType;
 }>();
-const mainItem = <Ref<HTMLDivElement>>ref();
+const mainItem = <Ref<HTMLDivElement>>ref({});
 
 const show = () => {
-  const htmlScrollTop = document.documentElement.scrollTop;
-  const htmlClientHeight = document.documentElement.clientHeight;
-  const offsetTop = mainItem.value.offsetTop;
-  if (htmlScrollTop + htmlClientHeight >= offsetTop) {
-    mainItem.value.style.opacity = '1';
-    mainItem.value.style.top = '0';
-    window.removeEventListener('scroll', show);
+  if (mainItem.value === null) {
+    window.removeEventListener("scroll", show);
+  } else {
+    const htmlScrollTop = document.documentElement.scrollTop;
+    const htmlClientHeight = document.documentElement.clientHeight;
+    const offsetTop = mainItem.value.offsetTop;
+    if (htmlScrollTop + htmlClientHeight >= offsetTop - 50) {
+      mainItem.value.style.opacity = "1";
+      mainItem.value.style.top = "0";
+      window.removeEventListener("scroll", show);
+    }
   }
 };
 onMounted(() => {
-  window.addEventListener('scroll', show);
+  window.addEventListener("scroll", show);
   show();
 });
 const handleItem = () => {
-  router.push('/blogDetails/'+props.data.id)
+  router.push("/blogDetails/" + props.data.id);
 };
 </script>
 
@@ -73,7 +79,7 @@ const handleItem = () => {
   &__container {
     padding: 20px;
     background-color: white;
-    margin-top: 10px;
+    margin-bottom: 10px;
     opacity: 0;
     position: relative;
     top: 100px;
@@ -131,6 +137,10 @@ const handleItem = () => {
     &:hover {
       color: #015ab9;
     }
+  }
+  &__tag-active {
+    color: white;
+    background-color: #656ed6;
   }
 }
 </style>

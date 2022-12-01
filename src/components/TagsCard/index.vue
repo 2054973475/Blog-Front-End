@@ -6,34 +6,38 @@
     <div class="tags__content">
       <div
         class="tags__item"
-        :class="route.query.keyWords === tag.name ? 'tags__item-active' : ''"
-        v-for="tag in tags"
-        :key="tag.tagID"
-        @click="handleTag(tag)"
+        :class="route.query.tags === item ? 'tags__item-active' : ''"
+        v-for="(item, index) in tagsKey"
+        :key="item"
+        @click="handleTag(item, tagsValue[index])"
       >
-        {{ tag.name }}<span class="tags__item-count">{{ tag.count }}</span>
+        {{ item }}<span class="tags__item-count">{{ tagsValue[index] }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Tag } from '../../../layouts/HomeLayout/index.vue';
-import { defineProps } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-const props = defineProps<{
-  tags: Array<Tag>;
-}>();
+import { onMounted, ref, Ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { getTags } from "../../api/index";
 const route = useRoute();
 const router = useRouter();
-const handleTag = (tag: Tag) => {
+const tagsKey = <Ref<Array<string>>>ref([]);
+const tagsValue = <Ref<Array<string>>>ref([]);
+const handleTag = (tag: string, count: string) => {
   router.push({
-    name: 'blogView',
+    name: "blogView",
     query: {
-      keyWords: tag.name,
+      tags: tag,
     },
   });
 };
+onMounted(async () => {
+  const { data } = await getTags();
+  tagsKey.value = Object.keys(data);
+  tagsValue.value = Object.values(data);
+});
 </script>
 
 <style lang="less">

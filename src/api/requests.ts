@@ -6,7 +6,8 @@ import axios from 'axios' //引入axios
 const requests = axios.create({
     //配置对象
     //baseURL 基础路径，发请求的时候，路径当中会出现api
-    baseURL:"http://39.108.14.150:3000/blogReception",
+    // baseURL:"http://39.108.14.150:3000/blogReception",
+    baseURL:"http://localhost:3000/blogReception",
     timeout:5000 //请求超时超过5s代表请求失败
 })
 

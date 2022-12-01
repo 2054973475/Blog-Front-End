@@ -1,10 +1,12 @@
 import requests from '../requests';
-import { BlogArticle } from './type';
+import { BlogArticleListType,Params,ReqData } from './type';
 import type { AxiosResponse } from 'axios';
-export const getAllArticle = async(): Promise<Array<BlogArticle>> => {
-  const data = <AxiosResponse<Array<BlogArticle>, any>>await requests({
+export const getAllArticle = async(params:Params,reqData:ReqData={}): Promise<BlogArticleListType> => {
+  const data = <AxiosResponse<BlogArticleListType, any>>await requests({
     url: '/getAllArticle',
-    method: 'get',
+    method: 'post',
+    params,
+    data:reqData
   });
   return data.data
 };

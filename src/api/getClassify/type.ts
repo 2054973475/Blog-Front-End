@@ -1,4 +1,4 @@
-export type Classify = {
+export type ClassifyType = {
   id: number;
   name: string;
   count: number;

@@ -10,10 +10,10 @@
 </template>
 
 <script setup lang="ts">
-import { inject, Ref } from 'vue';
-import type { UserInfo } from '../../api/types';
-const userInfo = inject<Ref<UserInfo>>('userInfo');
-const userDesc = userInfo?.value.userDesc;
+import { inject, Ref, computed } from "vue";
+import type { UserInfoType } from "../../api/types";
+const userInfo = inject<Ref<UserInfoType>>("userInfo");
+const userDesc = computed(() => userInfo?.value.userDesc);
 </script>
 
 <style lang="less">

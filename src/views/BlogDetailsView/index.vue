@@ -2,19 +2,19 @@
   <div class="blog-details__contanier">
     <div class="blog-details__modular">
       <div class="blog-details__header">
-        <div class="blog-details__title">{{ blogArticle.title }}</div>
+        <div class="blog-details__title">{{ article?.title }}</div>
         <div class="blog-details__information">
           <div class="blog-details__classify">
             <i class="bi bi-grid"></i>
-            <span>{{ blogArticle.classify }}</span>
+            <span>{{ article?.classify }}</span>
           </div>
           <div class="blog-details__release-time">
             <i class="bi bi-clock"></i>
-            <span>{{ blogArticle.releaseDate }}</span>
+            <span>{{ article?.releaseDate }}</span>
           </div>
           <div class="blog-details__view-number">
             <i class="bi bi-eye"></i>
-            <span>{{ blogArticle.viewNumber }}</span>
+            <span>{{ article?.viewNumber }}</span>
           </div>
           <div class="blog-details__comment-number">
             <i class="bi bi-chat-left-dots"></i>
@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="blog-details__divider"></div>
-      <div class="blog-details__content" v-html="blogArticle.content"></div>
+      <div class="blog-details__content" v-html="article?.content"></div>
     </div>
     <div class="blog-details__modular">
       <div class="blog-details__page">
@@ -31,25 +31,23 @@
           <div class="blog-details__page-text">上一篇</div>
           <div
             class="blog-details__page-title"
-            v-if="previous.statue === 1"
-            @click="handlePage(previous.id!)"
+            v-if="articlePrevious"
+            @click="handlePage(articlePrevious?.id!)"
           >
-            {{ previous.title }}
+            {{ articlePrevious?.title }}
           </div>
-          <div class="blog-details__page-no-more" v-else>
-            {{ previous.title }}
-          </div>
+          <div class="blog-details__page-no-more" v-else>没有了</div>
         </div>
         <div class="blog-details__next">
           <div class="blog-details__page-text">下一篇</div>
           <div
             class="blog-details__page-title"
-            v-if="next.statue === 1"
-            @click="handlePage(next.id!)"
+            v-if="articleNext"
+            @click="handlePage(articleNext?.id!)"
           >
-            {{ next.title }}
+            {{ articleNext.title }}
           </div>
-          <div class="blog-details__page-no-more" v-else>{{ next.title }}</div>
+          <div class="blog-details__page-no-more" v-else>没有了</div>
         </div>
       </div>
     </div>
@@ -72,65 +70,50 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, Ref } from 'vue';
-import { getAllArticle, getArticle } from '../../api/index';
-import { BlogArticle } from '../../api/types';
-import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
-const blogArticle = <Ref<BlogArticle>>ref({});
-const blogArticleList = <Ref<Array<BlogArticle>>>ref([]);
+import { ref, Ref, watch } from "vue";
+import { getArticle } from "../../api/index";
+import { BlogArticleType } from "../../api/types";
+import { useRoute, useRouter } from "vue-router";
+const blogArticle = <Ref<Array<BlogArticleType>>>ref([]);
+const article = <Ref<BlogArticleType | undefined>>ref({});
+const articlePrevious = <Ref<BlogArticleType | undefined>>ref({});
+const articleNext = <Ref<BlogArticleType | undefined>>ref({});
 const route = useRoute();
 const router = useRouter();
-const blogArticleIndex = ref(-1);
-const previous = computed(() => {
-  if (blogArticleIndex.value === -1 || blogArticleIndex.value === 0) {
-    return { statue: 0, title: '没有了' };
-  } else {
-    return {
-      statue: 1,
-      id: blogArticleList.value[blogArticleIndex.value - 1].id,
-      title: blogArticleList.value[blogArticleIndex.value - 1].title,
-    };
-  }
-});
-const next = computed(() => {
-  if (
-    blogArticleIndex.value === -1 ||
-    blogArticleIndex.value === blogArticleList.value.length - 1
-  ) {
-    return { statue: 0, title: '没有了' };
-  } else {
-    return {
-      statue: 1,
-      id: blogArticleList.value[blogArticleIndex.value + 1].id,
-      title: blogArticleList.value[blogArticleIndex.value + 1].title,
-    };
-  }
-});
+
 const handlePage = (id: number) => {
   router.push({
-    name: 'blogDetailsView',
+    name: "blogDetailsView",
     params: {
       id,
     },
   });
 };
 const initArticle = async () => {
-  const allArticle = await getAllArticle();
-  blogArticleList.value = allArticle;
-  const article = await getArticle({ id : Number(route.params.id) });
-  blogArticle.value = article;
-  blogArticleIndex.value = blogArticleList.value.findIndex(
-    (item) => item.id === blogArticle.value.id
+  blogArticle.value = await getArticle({ id: Number(route.params.id || 0) });
+  article.value = blogArticle.value.find(
+    (item) => item.id === Number(route.params.id)
   );
-  document.documentElement.scrollTop = 0;
-  document.title = blogArticle.value.title+'|博客';
+  if (article.value === undefined) {
+    router.push({
+      name: "blogView",
+    });
+  } else {
+    articlePrevious.value = blogArticle.value.find(
+      (item) => item.id < Number(route.params.id)
+    );
+    articleNext.value = blogArticle.value.find(
+      (item) => item.id > Number(route.params.id)
+    );
+    document.documentElement.scrollTop = 0;
+    document.title = article.value.title + "|博客";
+  }
 };
-onBeforeRouteUpdate(async () => {
+watch(()=>route.params.id,()=>{
   initArticle()
-});
-onMounted(async () => {
-  initArticle()
-});
+},{
+  immediate:true
+})
 </script>
 
 <style lang="less">

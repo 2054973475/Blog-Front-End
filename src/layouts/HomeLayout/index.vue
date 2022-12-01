@@ -21,7 +21,6 @@
           <ClassificationCard :classifyList="classifyList" />
           <TagsCard
             v-if="route.name === 'homeView' || route.name === 'blogView'"
-            :tags="tags"
           />
           <LinksCard />
         </div>
@@ -31,114 +30,53 @@
 </template>
 
 <script setup lang="ts">
-import { getInfo, getClassify, getAllArticle } from '../../api/index';
-import type { UserInfo, Classify, BlogArticle } from '../../api/types';
-import HomeHeader from '../../components/HomeHeader/index.vue';
-import BriefIntroductionCard from '../../components/BriefIntroductionCard/index.vue';
-import ClassificationCard from '../../components/ClassificationCard/index.vue';
-import LinksCard from '../../components/LinksCard/index.vue';
-import TagsCard from '../../components/TagsCard/index.vue';
-import ContactInformation from '../../components/ContactInformation/index.vue';
-import { onMounted, reactive, provide, Ref, ref, toRefs } from 'vue';
-import { useRoute } from 'vue-router';
-export type Tag = {
-  tagID: string;
-  name: string;
-  count: number;
-};
-const blogArticleList = <Array<BlogArticle>>reactive([]);
+import { getInfo, getClassify } from "../../api/index";
+import type { UserInfoType, ClassifyType } from "../../api/types";
+import HomeHeader from "../../components/HomeHeader/index.vue";
+import BriefIntroductionCard from "../../components/BriefIntroductionCard/index.vue";
+import ClassificationCard from "../../components/ClassificationCard/index.vue";
+import LinksCard from "../../components/LinksCard/index.vue";
+import TagsCard from "../../components/TagsCard/index.vue";
+import ContactInformation from "../../components/ContactInformation/index.vue";
+import { provide, Ref, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 const route = useRoute();
-const userInfo = <Ref<UserInfo>>ref({
+const userInfo = <Ref<UserInfoType>>ref({
   id: 0,
-  name: '',
-  userDesc: '',
-  avatar: '',
-  introduction: '',
-  QQ: '',
-  email: '',
-  phone: '',
+  name: "",
+  userDesc: "",
+  avatar: "",
+  introduction: "",
+  QQ: "",
+  email: "",
+  phone: "",
 });
-const classifyList = <Array<Classify>>reactive([]);
-
-onMounted(async () => {
+const classifyList = <Ref<Array<ClassifyType>>>ref([]);
+const init = async () => {
   const reqUserInfo = await getInfo();
   userInfo.value = reqUserInfo;
   const reqClassifyList = await getClassify();
-  reqClassifyList.forEach((item) => {
-    classifyList.push(item);
-  });
-  const reqAllArticle = await getAllArticle();
-  reqAllArticle.forEach((item) => {
-    blogArticleList.push(item);
-  });
+  classifyList.value = reqClassifyList;
   document.documentElement.scrollTop = 0;
-});
+};
 
-const tags = <Array<Tag>>reactive([
-  {
-    tagID: '1',
-    name: '博客系统',
-    count: 9,
+watch(
+  () => route,
+  () => {
+    init();
   },
   {
-    tagID: '2',
-    name: '小墨',
-    count: 2,
-  },
-  {
-    tagID: '3',
-    name: '魔众',
-    count: 3,
-  },
-  {
-    tagID: '4',
-    name: '旅行',
-    count: 7,
-  },
-  {
-    tagID: '5',
-    name: '自然',
-    count: 2,
-  },
-  {
-    tagID: '6',
-    name: '露宿',
-    count: 2,
-  },
-  {
-    tagID: '7',
-    name: '沙漠',
-    count: 2,
-  },
-  {
-    tagID: '8',
-    name: '魔众系统',
-    count: 7,
-  },
-  {
-    tagID: '9',
-    name: '云南',
-    count: 2,
-  },
-  {
-    tagID: '10',
-    name: '澎湖湾',
-    count: 2,
-  },
-  {
-    tagID: '11',
-    name: '晚霞',
-    count: 1,
-  },
-]);
-provide('userInfo', userInfo);
-provide('blogArticleList', blogArticleList);
+    deep: true,
+    immediate: true,
+  }
+);
+provide("userInfo", userInfo);
 </script>
 
 <style lang="less">
 .home-layout {
   &__container {
-    height: 100%;
+    min-height: 100vh;
     background-color: #f4f6f8;
     display: flex;
     flex-direction: column;
@@ -152,11 +90,12 @@ provide('blogArticleList', blogArticleList);
     flex: 1;
     max-width: 1100px;
     display: flex;
-    width:0;
+    width: 0;
   }
   &__content {
     flex: 2;
-    padding-top: 10px;
+    padding-top: 12px;
+    padding-bottom: 20px;
   }
   &__aside {
     box-sizing: border-box;

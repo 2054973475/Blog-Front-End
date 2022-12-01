@@ -7,7 +7,7 @@
       <div
         class="classification__item"
         :class="
-          route.query.id === classif.id
+          route.query.classif === classif.name
             ? 'classification__item-active'
             : ''
         "
@@ -23,15 +23,15 @@
 </template>
 
 <script setup lang="ts">
-import type { Classify } from '../../api/types';
+import type { ClassifyType } from '../../api/types';
 import { defineProps } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 const props = defineProps<{
-  classifyList: Array<Classify>;
+  classifyList: Array<ClassifyType>;
 }>();
 const route = useRoute();
 const router = useRouter();
-const handleClassif = (classif: Classify) => {
+const handleClassif = (classif: ClassifyType) => {
   router.push({
     name: 'blogView',
     query: {
