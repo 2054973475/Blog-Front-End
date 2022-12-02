@@ -1,5 +1,5 @@
 <template>
-  <div class="blog-details__contanier">
+  <div class="blog-details__contanier" v-loading="loading">
     <div class="blog-details__modular">
       <div class="blog-details__header">
         <div class="blog-details__title">{{ article?.title }}</div>
@@ -80,7 +80,7 @@ const articlePrevious = <Ref<BlogArticleType | undefined>>ref({});
 const articleNext = <Ref<BlogArticleType | undefined>>ref({});
 const route = useRoute();
 const router = useRouter();
-
+const loading = ref(false)
 const handlePage = (id: number) => {
   router.push({
     name: "blogDetailsView",
@@ -108,8 +108,10 @@ const initArticle = async () => {
     document.documentElement.scrollTop = 0;
     document.title = article.value.title + "|博客";
   }
+  loading.value = false
 };
 watch(()=>route.params.id,()=>{
+  loading.value = true
   initArticle()
 },{
   immediate:true
