@@ -33,7 +33,7 @@
               <router-link to="/about" class="nav-link">关于</router-link>
             </li>
             <li class="nav-item header__nav-item">
-              <a href="http://localhost:9528/#/dashboard" class="nav-link"
+              <a href="/admin" class="nav-link"
                 >后台</a
               >
             </li>

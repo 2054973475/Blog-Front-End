@@ -4,7 +4,6 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 export default defineConfig({
-  // base:'/Blog-Front-End/',
   plugins: [
     vue(),
     AutoImport({
@@ -14,9 +13,4 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
   ],
-  server: {
-    host: '0.0.0.0',
-    port: 5173,
-    open: true
-  },
 });
