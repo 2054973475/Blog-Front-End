@@ -97,13 +97,6 @@ provide("userInfo", userInfo);
     padding-top: 12px;
     padding-bottom: 20px;
     max-width: 700px;
-    code{
-      color:#ccc;
-    }
-    pre{
-      background-color: #50556B;
-      padding: 10px 20px;
-    }
   }
   &__aside {
     box-sizing: border-box;

@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="blog-details__divider"></div>
-      <div class="blog-details__content" v-html="article?.content"></div>
+      <EditorView :value="article?.content"/>
     </div>
     <div class="blog-details__modular">
       <div class="blog-details__page">
@@ -70,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+import EditorView from '../../components/EditorView/index.vue'
 import { ref, Ref, watch } from "vue";
 import { getArticle } from "../../api/index";
 import { BlogArticleType } from "../../api/types";
@@ -80,7 +81,7 @@ const articlePrevious = <Ref<BlogArticleType | undefined>>ref({});
 const articleNext = <Ref<BlogArticleType | undefined>>ref({});
 const route = useRoute();
 const router = useRouter();
-const loading = ref(false)
+const loading = ref(false);
 const handlePage = (id: number) => {
   router.push({
     name: "blogDetailsView",
@@ -108,14 +109,18 @@ const initArticle = async () => {
     document.documentElement.scrollTop = 0;
     document.title = article.value.title + "|博客";
   }
-  loading.value = false
+  loading.value = false;
 };
-watch(()=>route.params.id,()=>{
-  loading.value = true
-  initArticle()
-},{
-  immediate:true
-})
+watch(
+  () => route.params.id,
+  () => {
+    loading.value = true;
+    initArticle();
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <style lang="less">
@@ -157,15 +162,18 @@ watch(()=>route.params.id,()=>{
     margin: 20px 0;
     background-color: rgba(0, 0, 0, 0.1);
   }
-  &__content {
-    padding-bottom: 20px;
-  }
   &__page {
     display: flex;
     justify-content: space-between;
     padding: 4px;
   }
+  &__previous{
+    flex: 1;
+    width: 0;
+  }
   &__next {
+    flex: 1;
+    width: 0;
     text-align: end;
   }
   &__page-text {
@@ -173,6 +181,9 @@ watch(()=>route.params.id,()=>{
     font-size: 12px;
   }
   &__page-title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow:hidden;
     margin-top: 10px;
     color: #1f2937;
     font-size: 13px;

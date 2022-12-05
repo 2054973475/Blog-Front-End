@@ -12,6 +12,7 @@ declare module '@vue/runtime-core' {
     BriefIntroductionCard: typeof import('./src/components/BriefIntroductionCard/index.vue')['default']
     ClassificationCard: typeof import('./src/components/ClassificationCard/index.vue')['default']
     ContactInformation: typeof import('./src/components/ContactInformation/index.vue')['default']
+    EditorView: typeof import('./src/components/EditorView/index.vue')['default']
     ElBacktop: typeof import('element-plus/es')['ElBacktop']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElPagination: typeof import('element-plus/es')['ElPagination']

@@ -4,12 +4,13 @@
       <i class="bi bi-person about__icon"></i>关于我
     </div>
     <div class="about__content">
-      <div v-html="userDesc"></div>
+      <EditorView :value="userDesc"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import EditorView from '../../components/EditorView/index.vue'
 import { inject, Ref, computed } from "vue";
 import type { UserInfoType } from "../../api/types";
 const userInfo = inject<Ref<UserInfoType>>("userInfo");
