@@ -33,9 +33,7 @@
               <router-link to="/about" class="nav-link">关于</router-link>
             </li>
             <li class="nav-item header__nav-item">
-              <a href="http://localhost:8080" class="nav-link"
-                >后台</a
-              >
+              <a :href="backstageUrl" target="_blank" class="nav-link">后台</a>
             </li>
           </ul>
           <form class="d-flex header__nav-form" role="search">
@@ -57,14 +55,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+const backstageUrl = import.meta.env.VITE_APP_BACKSTAGE_URL;
 const route = useRoute();
 const router = useRouter();
 const keyword = ref("");
 const isActive = (name: string) => {
   return route.name === name ? "header__nav-item-active" : "header__nav-item";
 };
-const handleSearch = (e:KeyboardEvent) => {
-  const input =e.target as HTMLInputElement
+const handleSearch = (e: KeyboardEvent) => {
+  const input = e.target as HTMLInputElement;
   router.push({
     name: "blogView",
     query: {
@@ -72,7 +71,7 @@ const handleSearch = (e:KeyboardEvent) => {
     },
   });
   keyword.value = "";
-  input.blur()!
+  input.blur()!;
 };
 </script>
 
