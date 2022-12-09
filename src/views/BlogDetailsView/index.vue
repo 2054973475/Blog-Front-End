@@ -95,11 +95,12 @@ const initArticle = async () => {
   article.value = blogArticle.value.find(
     (item) => item.id === Number(route.params.id)
   );
-  if (article.value === undefined) {
-    router.push({
-      name: "blogView",
-    });
-  } else {
+  if (article.value === undefined && route.name === 'blogDetailsView') {
+    router.go(-1)
+  }
+  else if(article.value === undefined && route.name !== 'blogDetailsView'){
+  } 
+  else {
     articlePrevious.value = blogArticle.value.find(
       (item) => item.id < Number(route.params.id)
     );
@@ -107,7 +108,7 @@ const initArticle = async () => {
       (item) => item.id > Number(route.params.id)
     );
     document.documentElement.scrollTop = 0;
-    document.title = article.value.title + "|博客";
+    document.title = article.value?.title + "|博客";
   }
   loading.value = false;
 };
