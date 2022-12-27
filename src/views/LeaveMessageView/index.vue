@@ -1,107 +1,117 @@
 <template>
   <div>
     <div class="leave-message__container">
-      <div class="leave-message__header">
+      <div
+        class="leave-message__header"
+        v-if="leaveMessageListComputed.length !== 0"
+      >
         <i class="bi bi-chat-left-dots leave-message__icon"></i>博客留言
       </div>
       <div class="leave-message__content">
-        <div class="leave-message__item">
-          <div class="leave-message__userInfo">
-            <div class="leave-message__userInfo-left">
-              <i class="bi bi-person about__icon"></i>
-            </div>
-            <div class="leave-message__userInfo-right">
-              <div class="leave-message__name">我心飞扬</div>
-              <div class="leave-message__time">4个月前说：</div>
-            </div>
-          </div>
-          <div class="leave-message__text">
-            或许对于世界，你是一个人；但对于我，你就是全世界。你在时，你是一切，你不在时，一切是你。
-          </div>
-        </div>
-        <div class="leave-message__item">
-          <div class="leave-message__userInfo">
-            <div class="leave-message__userInfo-left">
-              <i class="bi bi-person about__icon"></i>
-            </div>
-            <div class="leave-message__userInfo-right">
-              <div class="leave-message__name">我心飞扬</div>
-              <div class="leave-message__time">4个月前说：</div>
-            </div>
-          </div>
-          <div class="leave-message__text">
-            或许对于世界，你是一个人；但对于我，你就是全世界。你在时，你是一切，你不在时，一切是你。
-          </div>
-        </div>
-        <div class="leave-message__item">
-          <div class="leave-message__userInfo">
-            <div class="leave-message__userInfo-left">
-              <i class="bi bi-person about__icon"></i>
-            </div>
-            <div class="leave-message__userInfo-right">
-              <div class="leave-message__name">我心飞扬</div>
-              <div class="leave-message__time">4个月前说：</div>
-            </div>
-          </div>
-          <div class="leave-message__text">
-            或许对于世界，你是一个人；但对于我，你就是全世界。你在时，你是一切，你不在时，一切是你。
-          </div>
-        </div>
-        <div class="leave-message__item">
-          <div class="leave-message__userInfo">
-            <div class="leave-message__userInfo-left">
-              <i class="bi bi-person about__icon"></i>
-            </div>
-            <div class="leave-message__userInfo-right">
-              <div class="leave-message__name">我心飞扬</div>
-              <div class="leave-message__time">4个月前说：</div>
-            </div>
-          </div>
-          <div class="leave-message__text">
-            或许对于世界，你是一个人；但对于我，你就是全世界。你在时，你是一切，你不在时，一切是你。
-          </div>
-        </div>
-        <div class="leave-message__item">
-          <div class="leave-message__userInfo">
-            <div class="leave-message__userInfo-left">
-              <i class="bi bi-person about__icon"></i>
-            </div>
-            <div class="leave-message__userInfo-right">
-              <div class="leave-message__name">我心飞扬</div>
-              <div class="leave-message__time">4个月前说：</div>
-            </div>
-          </div>
-          <div class="leave-message__text">
-            或许对于世界，你是一个人；但对于我，你就是全世界。你在时，你是一切，你不在时，一切是你。
-          </div>
-        </div>
+        <LeaveMessageItem
+          v-for="leaveMessageItem in leaveMessageListComputed"
+          :key="leaveMessageItem.id"
+          :data="leaveMessageItem"
+          :speakId="speakId"
+          @handleReply="handleReply"
+          @addSpeak="addReplySpeak"
+        />
       </div>
-    </div>
-    <div class="leave-message__speak">
-      <div class="leave-message__header">
-        <i class="bi bi-chat-left-dots leave-message__icon"></i>我来留言
-      </div>
-      <div class="leave-message__content">
-        <div class="leave-message__speak-userInfo">
-          <div class="leave-message__speak-headImg">
-            <i class="bi bi-person about__icon"></i>
-          </div>
-          <input
-            class="leave-message__speak-name"
-            type="text"
-            placeholder="匿名用户"
-          />
-        </div>
-        <textarea class="leave-message__speak-textarea" />
-        <div class="leave-message__submit">
-          <el-button type="primary" round>提交</el-button>
-        </div>
-      </div>
+      <LeaveMessageSpeak
+        v-if="speakId === 0"
+        ref="leaveMessageSpeak"
+        :speakId="speakId"
+        @handleSumbit="addSpeak"
+      />
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import LeaveMessageItem from "./LeaveMessageItem/index.vue";
+import LeaveMessageSpeak from "./LeaveMessageSpeak/index.vue";
+import { FormType } from "./LeaveMessageSpeak/index.vue";
+import { ref, Ref, computed, ComputedRef, onMounted } from "vue";
+import { getLeavingMessage, addLeavingMessage } from "../../api/index";
+import type {
+  LeaveMessageItemType,
+  AddLeaveMessageItemType,
+} from "../../api/types";
+import { useRoute } from "vue-router";
+import { ElMessage } from "element-plus";
+import "element-plus/es/components/message/style/css";
+
+const leaveMessageSpeak = ref<InstanceType<typeof LeaveMessageSpeak> | null>(
+  null
+);
+const route = useRoute();
+const leaveMessageList = <Ref<Array<LeaveMessageItemType>>>ref([]);
+const leaveMessageListComputed = <ComputedRef<Array<LeaveMessageItemType>>>(
+  computed(() => {
+    let data0: Array<LeaveMessageItemType> = [];
+    const data1 = leaveMessageList.value.filter((item) => item.pid === 0);
+    const data2 = leaveMessageList.value.filter((item) => item.pid !== 0);
+    data1.forEach((item) => {
+      data0.push(item);
+      data0 = [...data0, ...data2.filter((item1) => item1.pid === item.id)];
+    });
+    return data0;
+  })
+);
+const speakId = ref(0);
+
+const handleReply = (id: number) => {
+  speakId.value = id;
+};
+
+const addSpeak = (value: FormType) => {
+  const data = {
+    pid: 0,
+    name: value.username,
+    time: value.time,
+    email: value.email,
+    content: value.content,
+    replyid: 0,
+    replycontent: "",
+    replyMessageId: 0,
+    articleid: Number(route.params.id) || 0,
+  };
+  addAndgetLeavingMessage(data);
+};
+const addReplySpeak = (value: AddLeaveMessageItemType) => {
+  value.articleid = Number(route.params.id) || 0;
+  addAndgetLeavingMessage(value);
+};
+const addAndgetLeavingMessage = async (value: AddLeaveMessageItemType) => {
+  const res = await addLeavingMessage(value);
+  if (res.status === 1) {
+    ElMessage({
+      message: res.mag,
+      type: "success",
+    });
+    speakId.value = 0;
+    if (leaveMessageSpeak.value) {
+      leaveMessageSpeak.value!.form.content = " ";
+    }
+  } else {
+    ElMessage({
+      message: res.mag,
+      type: "error",
+    });
+  }
+  await getLeaveMessageList();
+};
+
+const getLeaveMessageList = async () => {
+  leaveMessageList.value = await getLeavingMessage({
+    id: Number(route.params.id) || 0,
+  });
+};
+
+onMounted(() => {
+  getLeaveMessageList();
+});
+</script>
 
 <style lang="less">
 .leave-message {
@@ -111,11 +121,14 @@
   }
   &__header {
     font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
   }
   &__item {
     padding-top: 20px;
     &::after {
-      content: '';
+      content: "";
       display: flex;
       height: 1px;
       margin-top: 25px;
@@ -124,82 +137,6 @@
   }
   &__icon {
     margin-right: 5px;
-  }
-
-  &__userInfo {
-    display: flex;
-    margin-bottom: 15px;
-  }
-  &__userInfo-left {
-    background-color: rgba(0, 0, 0, 0.2);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 20px;
-    display: flex;
-    align-items: center;
-    i {
-      font-size: 40px;
-      margin-left: 0px;
-      color: white;
-    }
-  }
-  &__time {
-    font-size: 13px;
-    color: #c4cfdb;
-  }
-  &__text {
-    font-size: 13px;
-    color: #34495e;
-    padding-left: 60px;
-  }
-  &__speak {
-    margin-top: 10px;
-    padding: 24px;
-    background-color: white;
-  }
-  &__speak-userInfo {
-    display: flex;
-    align-items: center;
-    margin: 20px 0;
-  }
-  &__speak-headImg {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    margin-right: 20px;
-    i {
-      font-size: 40px;
-      margin-left: 0;
-      color: white;
-    }
-  }
-  &__speak-name {
-    padding: 8px 0;
-    height: 40px;
-    width: 200px;
-    outline: none;
-    border: 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-    &::placeholder {
-      color: #c4cfdb;
-    }
-  }
-  &__speak-textarea {
-    width: 100%;
-    height: 100px;
-    border-color: rgba(0, 0, 0, 0.2);
-    outline-color: #656ed6;
-    outline-width: 1px;
-    resize: none;
-  }
-  &__submit {
-    text-align: center;
-    margin-top: 10px;
   }
 }
 </style>

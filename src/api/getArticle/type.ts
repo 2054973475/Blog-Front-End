@@ -8,6 +8,7 @@ export type BlogArticleType = {
   coverImg: string;
   summary: string;
   content?: string;
+  messagesNumber:number
 };
 export type Params = {
   id: number;

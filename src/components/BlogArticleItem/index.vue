@@ -17,7 +17,7 @@
               ><i class="bi bi-eye"></i>{{ data.viewNumber }}</span
             >
             <span class="blog-article-item__info-item"
-              ><i class="bi bi-chat-left-dots"></i>0</span
+              ><i class="bi bi-chat-left-dots"></i>{{ data.messagesNumber }}</span
             >
           </div>
           <div class="blog-article-item__text">

@@ -5,3 +5,5 @@ export { getArticle } from './getArticle/index';
 export { getLinks } from './getLinks/index';
 export { getCarousel } from './getCarousel/index';
 export { getTags } from './getTags/index';
+export { getLeavingMessage } from './getLeavingMessage/index'
+export { addLeavingMessage } from './addLeavingMessage/index'

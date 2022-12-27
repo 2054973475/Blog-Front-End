@@ -8,6 +8,7 @@ export type BlogArticleItemType = {
   coverImg: string;
   summary: string;
   content?: string;
+  messagesNumber:number,
 };
 export type BlogArticleListType={
   data:Array<BlogArticleItemType>,

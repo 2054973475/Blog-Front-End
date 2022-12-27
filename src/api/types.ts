@@ -5,3 +5,5 @@ export type { BlogArticleListType } from './getAllArticle/type';
 export type { BlogArticleType } from './getArticle/type'
 export type { LinkType } from './getLinks/type';
 export type { CarouselType } from './getCarousel/type';
+export type { LeaveMessageItemType } from './getLeavingMessage/type';
+export type { AddLeaveMessageItemType } from './addLeavingMessage/type'

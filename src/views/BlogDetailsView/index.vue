@@ -18,12 +18,12 @@
           </div>
           <div class="blog-details__comment-number">
             <i class="bi bi-chat-left-dots"></i>
-            <span>0</span>
+            <span>{{ article?.messagesNumber }}</span>
           </div>
         </div>
       </div>
       <div class="blog-details__divider"></div>
-      <EditorView :value="article?.content"/>
+      <EditorView :value="article?.content" />
     </div>
     <div class="blog-details__modular">
       <div class="blog-details__page">
@@ -67,10 +67,12 @@
       </div>
     </el-backtop>
   </div>
+  <LeaveMessageView />
 </template>
 
 <script setup lang="ts">
-import EditorView from '../../components/EditorView/index.vue'
+import LeaveMessageView from "../LeaveMessageView/index.vue";
+import EditorView from "../../components/EditorView/index.vue";
 import { ref, Ref, watch } from "vue";
 import { getArticle } from "../../api/index";
 import { BlogArticleType } from "../../api/types";
@@ -95,12 +97,10 @@ const initArticle = async () => {
   article.value = blogArticle.value.find(
     (item) => item.id === Number(route.params.id)
   );
-  if (article.value === undefined && route.name === 'blogDetailsView') {
-    router.go(-1)
-  }
-  else if(article.value === undefined && route.name !== 'blogDetailsView'){
-  } 
-  else {
+  if (article.value === undefined && route.name === "blogDetailsView") {
+    router.go(-1);
+  } else if (article.value === undefined && route.name !== "blogDetailsView") {
+  } else {
     articlePrevious.value = blogArticle.value.find(
       (item) => item.id < Number(route.params.id)
     );
@@ -168,7 +168,7 @@ watch(
     justify-content: space-between;
     padding: 4px;
   }
-  &__previous{
+  &__previous {
     flex: 1;
     width: 0;
   }
@@ -184,7 +184,7 @@ watch(
   &__page-title {
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow:hidden;
+    overflow: hidden;
     margin-top: 10px;
     color: #1f2937;
     font-size: 13px;
