@@ -88,7 +88,7 @@ provide("userInfo", userInfo);
   }
   &__body-container {
     flex: 1;
-    max-width: 1100px;
+    max-width: 1300px;
     display: flex;
     width: 0;
   }
@@ -96,7 +96,7 @@ provide("userInfo", userInfo);
     flex: 2;
     padding-top: 12px;
     padding-bottom: 20px;
-    max-width: 700px;
+    max-width: 900px;
   }
   &__aside {
     box-sizing: border-box;

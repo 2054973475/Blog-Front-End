@@ -17,7 +17,8 @@
               ><i class="bi bi-eye"></i>{{ data.viewNumber }}</span
             >
             <span class="blog-article-item__info-item"
-              ><i class="bi bi-chat-left-dots"></i>{{ data.messagesNumber }}</span
+              ><i class="bi bi-chat-left-dots"></i
+              >{{ data.messagesNumber }}</span
             >
           </div>
           <div class="blog-article-item__text">
@@ -92,11 +93,20 @@ const handleItem = () => {
   &__body-left {
     flex: 1;
     padding-right: 20px;
+    width: 0;
   }
   &__name {
     font-size: 20px;
     span {
+      display: block;
       cursor: pointer;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
       &:hover {
         color: #015ab9;
       }
@@ -119,6 +129,8 @@ const handleItem = () => {
     text-overflow: ellipsis;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    max-width: 100%;
+    overflow-wrap: break-word;
   }
   &__image {
     width: 150px;
